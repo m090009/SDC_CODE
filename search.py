@@ -56,9 +56,10 @@ def search(grid,init,goal,cost):
         open_cells.sort(reverse = True)        
         # Remove the cell with the lowest g-value
         current_cell = open_cells.pop()
-        
+        print(current_cell)
+        # quit()
         # Check of its the goal state
-        if current_cell[0] == goal[0] and current_cell[1] == goal[1]:
+        if current_cell[1] == goal[0] and current_cell[2] == goal[1]:
             found = True
             print("Have reached the goal state")
         # Expand more
@@ -66,13 +67,11 @@ def search(grid,init,goal,cost):
             # Expand cell to open neighbours
             expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost)
             # Append the expanded neighbours to the open cells list
-            open_cells.append(expanded_neighbours)
-            # Randomly choose one of the choices
-            choice = random.choice(possible_choices)
+            open_cells.extend(expanded_neighbours)
 
     # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
     # x.sort(reverse=True)
-    return x
+    return current_cell
 
 
 def find_next_neighbours(r, c, g, closed_states, cost):
@@ -83,13 +82,11 @@ def find_next_neighbours(r, c, g, closed_states, cost):
         n_r = r + delta[i][0]  
         n_c = c + delta[i][1]
         # check if we're out of bounds 
-        if (n_r > len(closed_states) or n_r < 0) or (n_c > len(closed_states[0]) or n_c < 0):
-            # skip this iteration if we're out of bounds
-            continue
-        if closed_states[n_r][n_c] == 0:
-            # Add g-value to the expanded cells
-            neighbours.append([g + cost ,n_r, n_c])
-            closed_states[n_r][n_c] = 1
+        if n_r < len(closed_states) and n_r >= 0 and n_c < len(closed_states[0]) and n_c >= 0:
+            if closed_states[n_r][n_c] == 0:
+                # Add g-value to the expanded cells
+                neighbours.append([g + cost ,n_r, n_c])
+                closed_states[n_r][n_c] = 1
     # return all the possible neighbours of the given cell
     return neighbours
 
