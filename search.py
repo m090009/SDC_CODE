@@ -15,6 +15,8 @@
 #   0 = Navigable space
 #   1 = Occupied space
 
+import random
+
 
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
@@ -42,11 +44,29 @@ def search(grid,init,goal,cost):
     # set the first initial state to closed
     closed_states[init[0]][init[1]] = 1
     # Initializing the current state with the initial state
-    current_state = [0, init[0], init[1]]
+    init_state = [0, init[0], init[1]]
+
+    # Goal state found status flag 
+    found = False
+    no_path = False
+    open_cells = [init_state]
+
+    while not found and not no_path:
+        # We sort our open cells according to the g-value
+        open_cells.sort()        
 
 
+        # Expand cell to open neighbours
+        expanded_neighbours = find_next_neighbours(init[0], init[1], closed_states)
+        # Add g-value to expanded neighbours
+        possible_choices = [[current_state[0] + cost, n[0], n[1]] for n in expanded_neighbours]
 
-    return find_next_neighbours(init[0], init[1], closed_states)
+        # Randomly choose one of the choices
+        choice = random.choice(possible_choices)
+
+    # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
+    # x.sort(reverse=True)
+    return x
 
 
 def find_next_neighbours(r, c, closed_states):
