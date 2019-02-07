@@ -52,22 +52,31 @@ def search(grid,init,goal,cost):
     open_cells = [init_state]
 
     while not found and not no_path:
-        # We sort our open cells according to the g-value
-        open_cells.sort(reverse = True)        
-        # Remove the cell with the lowest g-value
-        current_cell = open_cells.pop()
-        print(current_cell)
-        # quit()
-        # Check of its the goal state
-        if current_cell[1] == goal[0] and current_cell[2] == goal[1]:
-            found = True
-            print("Have reached the goal state")
-        # Expand more
+
+
+        # Check if there's no path to the goal and terminate execution
+        if len(open_cells) == 0:
+            no_path = True
+            print("Could not find a path to goal :'(")
+
+        # we check if we've reached the final state or expand more
         else:
-            # Expand cell to open neighbours
-            expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost)
-            # Append the expanded neighbours to the open cells list
-            open_cells.extend(expanded_neighbours)
+            # We sort our open cells according to the g-value
+            open_cells.sort(reverse = True)        
+            # Remove (Choose) the cell with the lowest g-value
+            current_cell = open_cells.pop()
+            # print(current_cell)
+
+            # Check if we've reached the goal state
+            if current_cell[1] == goal[0] and current_cell[2] == goal[1]:
+                found = True
+                print("YaY! we have reached the goal :)")
+            # Expand more
+            else: 
+                # Expand cell to open neighbours
+                expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost)
+                # Append the expanded neighbours to the open cells list
+                open_cells.extend(expanded_neighbours)
 
     # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
     # x.sort(reverse=True)
