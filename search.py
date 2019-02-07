@@ -16,7 +16,7 @@
 #   1 = Occupied space
 
 import random
-
+import numpy as np
 
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
@@ -50,10 +50,16 @@ def search(grid,init,goal,cost):
     found = False
     no_path = False
     open_cells = [init_state]
+    
+    # Add expand grid (table) of same size as grid
+    expand = np.full_like(grid, -1)
+    # expand = grid.copy()
+    # Initialize the expand grid with -1 as not traversed
+    # expand.fill(-1)
+    # Expansion order
+    order = 0
 
     while not found and not no_path:
-
-
         # Check if there's no path to the goal and terminate execution
         if len(open_cells) == 0:
             no_path = True
@@ -65,8 +71,10 @@ def search(grid,init,goal,cost):
             open_cells.sort(reverse = True)        
             # Remove (Choose) the cell with the lowest g-value
             current_cell = open_cells.pop()
-            # print(current_cell)
-
+            # Add the expansion order
+            expand[current_cell[1]][current_cell[2]] = order    
+            order += 1
+    
             # Check if we've reached the goal state
             if current_cell[1] == goal[0] and current_cell[2] == goal[1]:
                 found = True
@@ -80,6 +88,7 @@ def search(grid,init,goal,cost):
 
     # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
     # x.sort(reverse=True)
+    print(expand)
     return current_cell
 
 
