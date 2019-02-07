@@ -53,23 +53,29 @@ def search(grid,init,goal,cost):
 
     while not found and not no_path:
         # We sort our open cells according to the g-value
-        open_cells.sort()        
-
-
-        # Expand cell to open neighbours
-        expanded_neighbours = find_next_neighbours(init[0], init[1], closed_states)
-        # Add g-value to expanded neighbours
-        possible_choices = [[current_state[0] + cost, n[0], n[1]] for n in expanded_neighbours]
-
-        # Randomly choose one of the choices
-        choice = random.choice(possible_choices)
+        open_cells.sort(reverse = True)        
+        # Remove the cell with the lowest g-value
+        current_cell = open_cells.pop()
+        
+        # Check of its the goal state
+        if current_cell[0] == goal[0] and current_cell[1] == goal[1]:
+            found = True
+            print("Have reached the goal state")
+        # Expand more
+        else:
+            # Expand cell to open neighbours
+            expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost)
+            # Append the expanded neighbours to the open cells list
+            open_cells.append(expanded_neighbours)
+            # Randomly choose one of the choices
+            choice = random.choice(possible_choices)
 
     # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
     # x.sort(reverse=True)
     return x
 
 
-def find_next_neighbours(r, c, closed_states):
+def find_next_neighbours(r, c, g, closed_states, cost):
     neighbours = []
     # loop through all the directions
     for i in range(len(delta)):
@@ -81,7 +87,8 @@ def find_next_neighbours(r, c, closed_states):
             # skip this iteration if we're out of bounds
             continue
         if closed_states[n_r][n_c] == 0:
-            neighbours.append([n_r, n_c])
+            # Add g-value to the expanded cells
+            neighbours.append([g + cost ,n_r, n_c])
             closed_states[n_r][n_c] = 1
     # return all the possible neighbours of the given cell
     return neighbours
