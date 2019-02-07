@@ -32,32 +32,38 @@ delta = [[-1, 0], # go up
 
 delta_name = ['^', '<', 'v', '>']
 
+
 def search(grid,init,goal,cost):
     # ----------------------------------------
     # insert code here
     # ----------------------------------------
     # Initialize an open grid 
-    open_states = grid.copy()
+    closed_states = grid.copy()
     # set the first initial state to closed
-    open_states[init[0]][init[1]] = 1
-    return find_next_neighbours(0, 0, open_states)
-    
-    
-    
-    return open_states
-def find_next_neighbours(y, x, open_states):
+    closed_states[init[0]][init[1]] = 1
+    # Initializing the current state with the initial state
+    current_state = [0, init[0], init[1]]
+
+
+
+    return find_next_neighbours(init[0], init[1], closed_states)
+
+
+def find_next_neighbours(r, c, closed_states):
     neighbours = []
     # loop through all the directions
     for i in range(len(delta)):
         # next coordinate after the move
-        n_y = y + delta[i][0]  
-        n_x = x + delta[i][1]
+        n_r = r + delta[i][0]  
+        n_c = c + delta[i][1]
         # check if we're out of bounds 
-        if (n_y > len(open_states) or n_y < 0) or (n_x > len(open_states[0]) or n_x < 0):
+        if (n_r > len(closed_states) or n_r < 0) or (n_c > len(closed_states[0]) or n_c < 0):
             # skip this iteration if we're out of bounds
             continue
-        if open_states[n_y][n_x] == 0:
-            neighbours.append([n_y, n_x])
-            open_states[n_y][n_x] = 1
+        if closed_states[n_r][n_c] == 0:
+            neighbours.append([n_r, n_c])
+            closed_states[n_r][n_c] = 1
     # return all the possible neighbours of the given cell
     return neighbours
+
+print(search(grid, init, goal, cost))
