@@ -18,11 +18,17 @@
 import random
 import numpy as np
 
+# grid = [[0, 0, 1, 0, 0, 0],
+#         [0, 0, 1, 0, 0, 0],
+#         [0, 0, 0, 0, 1, 0],
+#         [0, 0, 1, 1, 1, 0],
+#         [0, 0, 0, 0, 1, 0]]
+
 grid = [[0, 0, 1, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0],
-        [0, 0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0]]
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0]]
 init = [0, 0]
 goal = [len(grid)-1, len(grid[0])-1]
 cost = 1
@@ -39,6 +45,15 @@ def search(grid,init,goal,cost):
     # ----------------------------------------
     # insert code here
     # ----------------------------------------
+
+    # Init path to goal 
+    path_to_goal = [[' ' if grid[row][col] == 0 else ',' for col in range(len(grid[0]))] for row in range(len(grid))]
+    print(grid)
+    print(path_to_goal)
+    
+    # Initialize a grid of the same size as the main grid to contain the parent of each cell
+    parent_cache = [[grid[row][col] if grid[row][col] == 0 else ',' for col in range(len(grid[0]))] for row in range(len(grid))]
+
     # Initialize an open grid 
     closed_states = grid.copy()
     # set the first initial state to closed
@@ -58,6 +73,7 @@ def search(grid,init,goal,cost):
     # expand.fill(-1)
     # Expansion order
     order = 0
+
 
     while not found and not no_path:
         # Check if there's no path to the goal and terminate execution
@@ -82,17 +98,18 @@ def search(grid,init,goal,cost):
             # Expand more
             else: 
                 # Expand cell to open neighbours
-                expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost)
+                expanded_neighbours = find_next_neighbours(current_cell[1], current_cell[2], current_cell[0], closed_states, cost, parent_cache)
                 # Append the expanded neighbours to the open cells list
                 open_cells.extend(expanded_neighbours)
 
     # x = [[3,1,1], [0, 1,1], [1, 1,1], [1, 1,1], [2, 1,1]]
     # x.sort(reverse=True)
-    print(expand)
+    # print(expand)
+    print(parent_cache)
     return current_cell
 
 
-def find_next_neighbours(r, c, g, closed_states, cost):
+def find_next_neighbours(r, c, g, closed_states, cost, parent_cache):
     neighbours = []
     # loop through all the directions
     for i in range(len(delta)):
@@ -105,6 +122,8 @@ def find_next_neighbours(r, c, g, closed_states, cost):
                 # Add g-value to the expanded cells
                 neighbours.append([g + cost ,n_r, n_c])
                 closed_states[n_r][n_c] = 1
+                # Add the cell parent to parent_cache grid
+                parent_cache[n_r][n_c] = [r, c]
     # return all the possible neighbours of the given cell
     return neighbours
 
